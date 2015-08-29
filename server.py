@@ -5,7 +5,7 @@ import json
 
 class StaticView(webapp2.RequestHandler):
     def get(self, path):
-        path = os.path.dirname(__file__) + os.sep + 'static' + os.sep + path 
+        path = os.path.join(os.path.dirname(__file__), 'static', path) 
         f = open(path, 'r')
         self.response.out.write(f.read())
         f.close()
