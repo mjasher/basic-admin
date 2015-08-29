@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title></title>
+    <!-- <link href="/static/third/bootstrap-3.3.5-dist/css/bootstrap.min.css"> -->
+    <!-- <link href="/static/third/bootstrap-datetimepicker.min.css"> -->
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+
+<body>
+    <div>
+        <button id="get-clients">Get all clients</button>
+    </div>
+    <div>
+        <input type="number">
+        <button id="get-client">Get one client</button>
+    </div>
+    <div>
+        <button id="add-client">Add client</button>
+    </div>
+    <div id="content"></div>
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="/static/third/bootstrap-3.3.5-dist/js/jquery-1.11.3.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <!--
+    <script src="/static/third/bootstrap-3.3.5-dist/js/bootstrap.min.js"></script>
+    <script src="/static/third/moment.min.js"></script>
+    <script src="/static/third/bootstrap-datetimepicker.min.js"></script>
+    -->
+    <script>
+    function append_row(row, $tbody) {
+
+        var html = "<tr>";
+        html += "<td>" + row["rowid"] + "</td>";
+        ["name", "dob", "email"].forEach(function(key) {
+            html += '<td> <input type="text" data="' + key + '" value="' + row[key] + '"> </td>';
+        });
+        html += '<td> <button>DELETE</button> </td>';
+        html += "</tr>";
+
+        var $row = $(html).appendTo($tbody);
+
+        // update row on change
+        $row.find("input").on("change", function() {
+            row[$(this).attr('data')] = this.value;
+            update_client(row);
+        });
+
+        // delete row on click
+        // TODO have trash database or keep with deleted flag, or ask for confirmation
+        $row.find("button").on("click", function() {
+            delete_client(row);
+        });
+
+    }
+
+    function render_table(data, $div) {
+        var table = '<table style="width:100%">';
+        table += "<thead> <tr> <th>rowid</th> <th>name</th> <th>DOB</th> <th>email</th> <th></th> </tr> </thead>";
+        table += "<tbody> </tbody>";
+        table += "</table>";
+
+        // erases what was previously there, this should allow the garbage collector to remove all event listeners for the rows
+        $div.html(table);
+        var $tbody = $div.find("tbody");
+
+        for (var i = 0; i < data.length; i++) {
+            append_row(data[i], $tbody);
+        };
+    }
+
+    $("#get-clients").on("click", function() {
+        get_all_clients();
+    });
+
+    $("#get-client").on("click", function() {
+        get_one_client($(this).prev()[0].value);
+    });
+
+    $("#add-client").on("click", function() {
+        add_blank_client();
+    });
+
+
+
+    function get_all_clients() {
+        var jqxhr = $.ajax({
+                url: "/api/clients",
+                method: "GET",
+                contentType: "application/json",
+                dataType: 'json', // so we don't have to JSON.parse() later
+            })
+            .done(function(data) {
+                render_table(data, $("#content"));
+                console.log("get all", data);
+            })
+            .fail(function(err) {
+                console.log(err);
+            });
+    }
+
+    function get_one_client(rowid) {
+        var jqxhr = $.ajax({
+                url: "/api/client",
+                method: "GET",
+                contentType: "application/json",
+                dataType: 'json', // so we don't have to JSON.parse() later
+                data: {
+                    "rowid": rowid
+                }
+            })
+            .done(function(data) {
+                render_table(data, $("#content"));
+                console.log("get one", data);
+            })
+            .fail(function(err) {
+                console.log(err);
+            });
+    }
+
+    function add_blank_client() {
+        var jqxhr = $.ajax({
+                url: "/api/client",
+                method: "POST",
+                contentType: "application/json",
+                dataType: 'json',
+            })
+            .done(function(data) {
+                get_all_clients();
+                console.log("add", data);
+            })
+            .fail(function(err) {
+                console.log(err);
+            });
+    }
+
+    function update_client(row) {
+        var jqxhr = $.ajax({
+                url: "/api/client",
+                method: "PUT",
+                contentType: "application/json",
+                dataType: 'json',
+                data: JSON.stringify(row)
+            })
+            .done(function(data) {
+                console.log("edit", data);
+            })
+            .fail(function(err) {
+                console.log(err);
+            });
+    }
+
+    function delete_client(row) {
+        var jqxhr = $.ajax({
+                url: "/api/client",
+                method: "DELETE",
+                contentType: "application/json",
+                dataType: 'json',
+                data: JSON.stringify(row)
+            })
+            .done(function(data) {
+                get_all_clients();
+                console.log("delete", data);
+            })
+            .fail(function(err) {
+                console.log(err);
+            });
+    }
+    </script>
+</body>
+
+</html>
