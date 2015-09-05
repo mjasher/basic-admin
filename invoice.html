@@ -1,0 +1,181 @@
+<!doctype html>
+<html class="no-js" lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title></title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="apple-touch-icon" href="apple-touch-icon.png">
+        <!-- Place favicon.ico in the root directory -->
+
+        <style>
+
+            /*! PocketGrid 1.1.0
+            * Copyright 2013 Arnaud Leray
+            * MIT License
+            */
+            /* Border-box-sizing */
+            .block-group, .block, .block-group:after, .block:after, .block-group:before, .block:before {
+              -webkit-box-sizing: border-box;
+              -moz-box-sizing: border-box;
+              box-sizing: border-box;
+            }
+
+            /* Clearfix */
+            .block-group {
+              *zoom: 1;
+            }
+            .block-group:before, .block-group:after {
+              display: table;
+              content: "";
+              line-height: 0;
+            }
+            .block-group:after {
+              clear: both;
+            }
+
+            .block-group {
+              /* ul/li compatibility */
+              list-style-type: none;
+              padding: 0;
+              margin: 0;
+            }
+
+            /* Nested grid */
+            .block-group > .block-group {
+              clear: none;
+              float: left;
+              margin: 0 !important;
+            }
+
+            /* Default block */
+            .block {
+              float: left;
+              width: 100%;
+            }
+
+            .container{
+                max-width: 800px;
+                margin-left: auto;
+                margin-right: auto;
+                margin-top: 5%;
+                margin-bottom: 5%;
+            }
+
+            .half-block{
+                width: 50%;
+            }
+
+            .third-block{
+                width: 33%;
+            }
+
+            .right{
+                text-align: right;
+            }
+
+            .centre{
+                text-align: center;
+            }
+
+            table{ 
+                width: 100%;
+                text-align: left;
+            }
+
+            img{
+                width: 100%;
+                height: auto;
+            }
+
+            .small-img{
+                width: 20%;
+                float: left;
+            }
+
+        </style>
+
+    </head>
+    <body>
+        <div class="container">
+               
+            <div class="block-group">
+                <div class="block half-block">
+                    <img src="img/logo.svg" alt="">
+                    ABN: 50884937146
+                </div>
+                <div class="block half-block right">
+                    Unit 301B  <br>
+                    1-3 Heydon Avenue  <br>
+                    Warrawee  <br>
+                    2074  <br>
+                    (+61) 401 839 138 
+                </div>
+            </div>
+
+            <h1>Invoice</h1>
+
+            <div class="block-group">
+                <div class="block half-block">
+                    Speech Pathologist: Rebecca Asher   <br>
+                    Medicare Provider No: 4970971X  
+
+                </div>
+                <div class="block half-block right">
+                    Invoice Number: {{invoice_num}} <br>
+                    Date: {{issued_date}}
+                </div>
+            </div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Description</th>
+                        <th>Price</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in cost_rows %}
+                        <tr>
+                            <td>{{ row.description }}</td>
+                            <td>{{ row.cost }}</td>
+                        </tr>
+                    {% end %}
+                    <tr><td> </td><td> </td></tr>
+                    <tr>
+                        <td>Total price</td>
+                        <td> {{total_cost}}</td>
+                    </tr>
+                </tbody>
+
+            </table>
+
+            <h2>
+                No GST has been charged.
+            </h2>
+
+            <div class="block-group">
+                <div class="block third-block">
+                  Please pay by direct deposit: <br>
+                    Hullabaloo Speech <br>
+                    BSB: 082 991 <br>
+                    Account: 212 880 580 <br>
+
+                </div>
+                <div class="block third-block centre">
+                    OR
+                </div>
+                <div class="block third-block right">
+                    <img src="img/bpay.svg" class="small-img" alt="">
+                    Biller Code: 768374 <br>
+                    Ref: 212880580
+                </div>
+            </div>
+
+        </div>
+        
+
+    </body>
+</html>
