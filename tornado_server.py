@@ -1,5 +1,6 @@
 import tornado.ioloop
 import tornado.web
+import tornado.escape
 import os
 import sqlite3
 import json
@@ -50,7 +51,7 @@ class ClientView(tornado.web.RequestHandler):
 
     # edit a given row
     def put(self):
-        data = json.loads(self.request.body)
+        data = json.loads(tornado.escape.to_basestring(self.request.body))
         conn = sqlite3.connect('example.db')
         c = conn.cursor()
         c.execute("UPDATE clients SET name=?, dob=?, email=? WHERE rowid=?", (data["name"], data["dob"], data["email"], data["rowid"]))
@@ -61,7 +62,7 @@ class ClientView(tornado.web.RequestHandler):
 
     # delete a given row
     def delete(self):
-        data = json.loads(self.request.body)
+        data = json.loads(tornado.escape.to_basestring(self.request.body))
         conn = sqlite3.connect('example.db')
         c = conn.cursor()
         c.execute("DELETE FROM clients WHERE rowid=?", (data["rowid"],))
